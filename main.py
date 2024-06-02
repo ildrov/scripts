@@ -14,10 +14,29 @@ def application(environ, start_response):
         try:
             tz = pytz.timezone(tzname)
             dt = datetime.now(tz)
-            response_body = dt.strftime('%Y-%m-%d %H:%M:%S %Z%z')
+            response_body = f"""
+            <html>
+                <head>
+                    <title>Current Time</title>
+                </head>
+                <body>
+                    <h1>Current Time in {tzname}</h1>
+                    <p>{dt.strftime('%Y-%m-%d %H:%M:%S %Z%z')}</p>
+                </body>
+            </html>
+            """
             start_response('200 OK', [('Content-Type', 'text/html')])
         except pytz.UnknownTimeZoneError:
-            response_body = 'Unknown timezone'
+            response_body = """
+            <html>
+                <head>
+                    <title>Error</title>
+                </head>
+                <body>
+                    <h1>Unknown timezone</h1>
+                </body>
+            </html>
+            """
             start_response('400 Bad Request', [('Content-Type', 'text/html')])
     elif method == 'POST':
         try:
